@@ -1,98 +1,168 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+} from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import {
+  SafeAreaView,
+  SafeAreaProvider,
+} from 'react-native-safe-area-context';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+const App = () => {
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaProvider>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#FFFFFF"
+      />
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      <SafeAreaView style={styles.container}>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        {/* Các ô màu */}
+        <View style={styles.content}>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+          {/* Hàng 1 */}
+          <View style={styles.row}>
+            <View style={[styles.box, styles.box1]}>
+              <Text style={styles.whiteText}>1</Text>
+            </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
+            <View style={[styles.box, styles.box2]}>
+              <Text style={styles.whiteText}>2</Text>
+            </View>
+          </View>
+
+          {/* Hàng 2 */}
+          <View style={styles.row}>
+            <View style={[styles.box, styles.box3]}>
+              <Text style={styles.blackText}>3</Text>
+            </View>
+
+            <View style={[styles.box, styles.box4]}>
+              <Text style={styles.whiteText}>4</Text>
+            </View>
+
+            <View style={[styles.box, styles.box5]}>
+              <Text style={styles.whiteText}>5</Text>
+            </View>
+          </View>
+
+          {/* Hàng 3 */}
+          <View style={styles.row}>
+            <View style={[styles.box, styles.box6]}>
+              <Text style={styles.whiteText}>6</Text>
+            </View>
+          </View>
+
+        </View>
+
+        {/* Họ tên - MSSV */}
+        <View style={styles.studentInfo}>
+          <Text style={styles.studentText}>
+            Họ và tên - MSSV
+          </Text>
+        </View>
+
       </SafeAreaView>
-    </ThemedView>
+    </SafeAreaProvider>
   );
-}
+};
 
 const styles = StyleSheet.create({
+  // Toàn bộ màn hình
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+
+  // Khu vực chứa 6 ô
+  content: {
+    paddingHorizontal: 12,
+    paddingTop: 10,
+  },
+
+  // Mỗi hàng
+  row: {
     flexDirection: 'row',
+    width: '100%',
+    height: 155,
+    gap: 9,
+    marginBottom: 9,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
+
+  // Style chung cho các ô
+  box: {
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Ô số 1
+  box1: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    backgroundColor: '#1976F3',
   },
-  title: {
-    textAlign: 'center',
+
+  // Ô số 2
+  box2: {
+    flex: 1,
+    backgroundColor: '#F53636',
   },
-  code: {
-    textTransform: 'uppercase',
+
+  // Ô số 3
+  box3: {
+    flex: 0.5,
+    backgroundColor: '#FFD719',
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  // Ô số 4
+  box4: {
+    flex: 0.5,
+    backgroundColor: '#28AE63',
+  },
+
+  // Ô số 5
+  box5: {
+    flex: 1,
+    backgroundColor: '#8239DF',
+  },
+
+  // Ô số 6
+  box6: {
+    flex: 1,
+    backgroundColor: '#FF7312',
+  },
+
+  // Chữ màu trắng
+  whiteText: {
+    color: '#FFFFFF',
+    fontSize: 58,
+    fontWeight: 'bold',
+  },
+
+  // Chữ màu đen
+  blackText: {
+    color: '#000000',
+    fontSize: 58,
+    fontWeight: 'bold',
+  },
+
+  // Vị trí Họ tên - MSSV
+  studentInfo: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 15,
+  },
+
+  // Chữ Họ tên - MSSV
+  studentText: {
+    fontSize: 20,
+    fontWeight: '500',
+    color: '#444444',
   },
 });
+
+export default App;
