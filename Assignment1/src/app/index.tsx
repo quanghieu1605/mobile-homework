@@ -62,7 +62,7 @@ const App = () => {
         {/* Họ tên - MSSV */}
         <View style={styles.studentInfo}>
           <Text style={styles.studentText}>
-            Họ và tên - MSSV
+            Nguyễn Quang Hiếu - BIT240091
           </Text>
         </View>
 
