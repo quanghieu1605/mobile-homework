@@ -24,6 +24,7 @@ export default function Screen1() {
   const [form, setForm] = useState<FormState>({ userName: '', mssv: '' });
   const [errors, setErrors] = useState<FormErrors>({});
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
 
   const updateField = (field: keyof FormState, value: string) => {
@@ -40,18 +41,36 @@ export default function Screen1() {
     const mssv = form.mssv.trim();
 
     if (!userName) nextErrors.userName = 'Vui lòng nhập UserName';
-    if (!mssv) nextErrors.mssv = 'Vui lòng nhập MSSV';
+    if (!mssv) {
+      nextErrors.mssv = 'Vui lòng nhập MSSV';
+    } else if (!/^B[A-Za-z]{2}(2[2-6])\d{4}$/.test(mssv)) {
+      nextErrors.mssv = 'MSSV không đúng định dạng (VD: BIT240091)';
+    }
 
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
-      const missingFields: string[] = [];
-      if (!userName) missingFields.push('• Họ tên (UserName)');
-      if (!mssv) missingFields.push('• Mã số sinh viên (MSSV)');
-      setModalMessage(`Vui lòng điền đầy đủ các trường sau:\n\n${missingFields.join('\n')}`);
+      const errorLines: string[] = [];
+      if (!userName) errorLines.push('• Họ tên (UserName): chưa nhập');
+      if (!mssv) {
+        errorLines.push('• MSSV: chưa nhập');
+      } else if (nextErrors.mssv) {
+        errorLines.push(
+          '• MSSV không đúng định dạng\n' +
+          '  - Ký tự 1: chữ B viết hoa\n' +
+          '  - Ký tự 2-3: chữ cái A-Z (hoa hoặc thường)\n' +
+          '  - Kí tự 4-5: năm nhập học (22 → 26)\n' +
+          '  - Kí tự 6-9: 4 chữ số (0 → 9)\n' +
+          '  Ví dụ hợp lệ: BIT240091'
+        );
+      }
+      const isMssvFormatError = !!(nextErrors.mssv && mssv);
+      setModalTitle(isMssvFormatError && !nextErrors.userName ? '⚠️ Sai định dạng MSSV' : '⚠️ Thiếu / Sai thông tin');
+      setModalMessage(errorLines.join('\n\n'));
       setModalVisible(true);
       return;
     }
+
 
     router.push({
       pathname: '/screen2',
@@ -135,7 +154,7 @@ export default function Screen1() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>⚠️ Thiếu thông tin</Text>
+            <Text style={styles.modalTitle}>{modalTitle}</Text>
             <Text style={styles.modalMessage}>{modalMessage}</Text>
             <TouchableOpacity
               style={styles.modalButton}
