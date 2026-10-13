@@ -6,16 +6,16 @@ const translations = {
     // App
     appName: 'Quản Lý Sinh Viên',
     // Screen titles
-    studentList: 'Danh Sách Sinh Viên',
-    studentDetail: 'Thông Tin Sinh Viên',
-    addStudent: 'Thêm Sinh Viên',
-    editStudent: 'Sửa Thông Tin SV',
+    studentList: 'Danh sách sinh viên',
+    studentDetail: 'Thông tin sinh viên',
+    addStudent: 'Thêm sinh viên',
+    editStudent: 'Sửa thông tin SV',
     // Fields
-    fullName: 'Họ và Tên',
-    studentId: 'Mã Số SV',
+    fullName: 'Họ và tên',
+    studentId: 'Mã số SV',
     email: 'Email',
-    avatar: 'Ảnh Đại Diện',
-    avatarUrl: 'Link Ảnh (URL)',
+    avatar: 'Ảnh đại diện',
+    avatarUrl: 'Link ảnh (URL)',
     // Placeholders
     enterFullName: 'Nhập họ và tên...',
     enterStudentId: 'Nhập mã số SV (VD: SV001)...',
@@ -34,7 +34,7 @@ const translations = {
     // Confirm dialogs
     confirmDelete: 'Xác Nhận Xóa',
     confirmDeleteMsg: 'Bạn có muốn xóa thông tin sinh viên "{name}" không?',
-    confirmEdit: 'Xác Nhận Sửa',
+    confirmEdit: 'Xác nhận sửa',
     confirmEditMsg: 'Bạn có muốn sửa thông tin sinh viên "{name}" không?',
     // Messages
     noStudents: 'Chưa có sinh viên nào.\nNhấn + để thêm mới!',

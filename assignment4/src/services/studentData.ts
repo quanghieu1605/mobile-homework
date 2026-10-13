@@ -16,18 +16,18 @@ export const translations = {
   vi: {
     appName: 'Quản Lý Sinh Viên',
     tagline: 'Danh sách sinh viên',
-    studentList: 'Danh Sách Sinh Viên',
+    studentList: 'Danh sách sinh viên',
     studentCount: '{count} sinh viên',
     noStudents: 'Chưa có sinh viên nào trong danh sách',
     noStudentsHint: 'Nhấn nút "Thêm Sinh Viên" bên dưới để tạo sinh viên mới',
-    addStudent: 'Thêm Sinh Viên',
-    editStudent: 'Sửa Thông Tin SV',
-    studentDetail: 'Thông Tin Chi Tiết Sinh Viên',
-    fullName: 'Họ và Tên',
-    studentId: 'Mã Số Sinh Viên (MSSV)',
+    addStudent: 'Thêm sinh viên',
+    editStudent: 'Sửa thông tin SV',
+    studentDetail: 'Thông tin chi tiết sinh viên',
+    fullName: 'Họ và tên',
+    studentId: 'Mã số sinh viên (MSSV)',
     email: 'Email',
-    avatar: 'Ảnh Đại Diện',
-    avatarUrl: 'Link Ảnh (URL)',
+    avatar: 'Ảnh đại diện',
+    avatarUrl: 'Link ảnh (URL)',
     pickFromGallery: 'Chọn ảnh từ thiết bị',
     orEnterUrl: 'Hoặc nhập đường dẫn (link) ảnh bên dưới',
     enterFullName: 'Nhập họ và tên sinh viên...',
@@ -47,7 +47,7 @@ export const translations = {
     confirmEditMsg: 'Bạn có muốn sửa thông tin SV không?',
     errNameRequired: 'Vui lòng nhập họ và tên',
     errIdRequired: 'Vui lòng nhập mã số sinh viên',
-    errIdFormat: 'MSSV không đúng định dạng! Phải gồm 9 ký tự: bắt đầu bằng chữ "B" in hoa + 2 chữ cái (A-Z) + 2 số từ 22-26 + 4 số cuối (0-9). Ví dụ: BCN240001',
+    errIdFormat: 'MSSV không đúng định dạng! Phải gồm 9 ký tự: bắt đầu bằng chữ "B" in hoa + 2 chữ cái (không bắt buộc viết hoa) + 2 số từ 22-26 + 4 số cuối (0-9). Ví dụ: Bcn240001, BCN240001',
     errIdExists: 'Mã số sinh viên này đã tồn tại',
     errEmailRequired: 'Vui lòng nhập địa chỉ email',
     errEmailInvalid: 'Email không đúng định dạng (VD: example@email.com)',
@@ -72,7 +72,7 @@ export const translations = {
     pickFromGallery: 'Upload from device',
     orEnterUrl: 'Or enter image link below',
     enterFullName: 'Enter student full name...',
-    enterStudentId: 'Enter student ID (e.g. BCN240001)...',
+    enterStudentId: 'Enter student ID (e.g. Bcn240001)...',
     enterEmail: 'Enter student email (e.g. student@gmail.com)...',
     enterAvatarUrl: 'https://example.com/avatar.jpg',
     save: 'Save Info',
@@ -88,7 +88,7 @@ export const translations = {
     confirmEditMsg: 'Do you want to edit this student info?',
     errNameRequired: 'Please enter student full name',
     errIdRequired: 'Please enter student ID',
-    errIdFormat: 'Invalid Student ID format! Must have 9 chars: starts with "B" + 2 letters (A-Z) + 2 digits (22-26) + 4 digits (0-9). E.g.: BCN240001',
+    errIdFormat: 'Invalid Student ID format! Must have 9 chars: starts with capital "B" + 2 letters (case insensitive) + 2 digits (22-26) + 4 digits (0-9). E.g.: Bcn240001, BCN240001',
     errIdExists: 'This student ID already exists',
     errEmailRequired: 'Please enter email address',
     errEmailInvalid: 'Invalid email address format (e.g. example@email.com)',
@@ -97,8 +97,8 @@ export const translations = {
   },
 };
 
-// MSSV Regex: B + 2 chữ cái in hoa (A-Z) + 2 số (22-26) + 4 số (0-9). Tổng cộng đúng 9 ký tự.
-export const MSSV_REGEX = /^B[A-Z]{2}2[2-6][0-9]{4}$/;
+// MSSV Regex: B (bắt buộc viết hoa) + 2 chữ cái (không bắt buộc viết hoa) + 2 số (22-26) + 4 số (0-9). Tổng cộng đúng 9 ký tự.
+export const MSSV_REGEX = /^B[a-zA-Z]{2}2[2-6][0-9]{4}$/;
 
 // Email Regex chuẩn
 export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

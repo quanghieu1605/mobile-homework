@@ -1,5 +1,5 @@
-import * as ImagePicker from 'expo-image-picker';
-import React, { useEffect, useState } from 'react';
+import * as ImagePicker from "expo-image-picker";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -16,7 +16,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native";
 
 import {
   EMAIL_REGEX,
@@ -28,12 +28,18 @@ import {
   saveStudents,
   setStoredLanguage,
   translations,
-} from '@/services/studentData';
+} from "@/services/studentData";
 
 // Color palette for initials avatar fallback
 const AVATAR_COLORS = [
-  '#4F46E5', '#7C3AED', '#2563EB', '#0D9488',
-  '#059669', '#D97706', '#DC2626', '#DB2777',
+  "#4F46E5",
+  "#7C3AED",
+  "#2563EB",
+  "#0D9488",
+  "#059669",
+  "#D97706",
+  "#DC2626",
+  "#DB2777",
 ];
 
 function getAvatarColor(str: string): string {
@@ -52,7 +58,7 @@ function getInitials(name: string): string {
 
 export default function StudentManagementApp() {
   // Current language state (Default Vietnamese)
-  const [lang, setLang] = useState<Language>('vi');
+  const [lang, setLang] = useState<Language>("vi");
   const t = translations[lang];
 
   // Data states
@@ -60,26 +66,26 @@ export default function StudentManagementApp() {
   const [loading, setLoading] = useState(true);
 
   // Screen state: 'list' (Trang 1: Danh sách) | 'form' (Trang 3: Thêm / Sửa)
-  const [currentScreen, setCurrentScreen] = useState<'list' | 'form'>('list');
-  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
+  const [currentScreen, setCurrentScreen] = useState<"list" | "form">("list");
+  const [formMode, setFormMode] = useState<"add" | "edit">("add");
 
   // Trang 2: Chi tiết sinh viên (Dialog Modal)
   const [detailStudent, setDetailStudent] = useState<Student | null>(null);
 
   // Form states (Trang 3)
   const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
-  const [inputName, setInputName] = useState('');
-  const [inputId, setInputId] = useState('');
-  const [inputEmail, setInputEmail] = useState('');
-  const [inputAvatar, setInputAvatar] = useState('');
+  const [inputName, setInputName] = useState("");
+  const [inputId, setInputId] = useState("");
+  const [inputEmail, setInputEmail] = useState("");
+  const [inputAvatar, setInputAvatar] = useState("");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Confirmation Dialog states (Bắt buộc theo đề bài)
   const [confirmDialog, setConfirmDialog] = useState<{
     visible: boolean;
-    type: 'delete' | 'edit_save' | 'edit_request';
+    type: "delete" | "edit_save" | "edit_request";
     targetStudent?: Student;
-  }>({ visible: false, type: 'delete' });
+  }>({ visible: false, type: "delete" });
 
   // Load language and students on mount
   useEffect(() => {
@@ -95,34 +101,34 @@ export default function StudentManagementApp() {
 
   // Language toggle handler
   const handleToggleLanguage = async () => {
-    const nextLang: Language = lang === 'vi' ? 'en' : 'vi';
+    const nextLang: Language = lang === "vi" ? "en" : "vi";
     setLang(nextLang);
     await setStoredLanguage(nextLang);
   };
 
   // Open Trang 3: Add new student
   const handleOpenAdd = () => {
-    setFormMode('add');
+    setFormMode("add");
     setEditingStudentId(null);
-    setInputName('');
-    setInputId('');
-    setInputEmail('');
-    setInputAvatar('');
+    setInputName("");
+    setInputId("");
+    setInputEmail("");
+    setInputAvatar("");
     setFormErrors({});
-    setCurrentScreen('form');
+    setCurrentScreen("form");
   };
 
   // Open Trang 3: Request edit student (triggers confirmation dialog first)
   const handleRequestEdit = (student: Student) => {
     setConfirmDialog({
       visible: true,
-      type: 'edit_request',
+      type: "edit_request",
       targetStudent: student,
     });
   };
 
   const handleExecuteOpenEdit = (student: Student) => {
-    setFormMode('edit');
+    setFormMode("edit");
     setEditingStudentId(student.id);
     setInputName(student.fullName);
     setInputId(student.studentId);
@@ -132,14 +138,14 @@ export default function StudentManagementApp() {
     if (detailStudent) {
       setDetailStudent(null);
     }
-    setCurrentScreen('form');
+    setCurrentScreen("form");
   };
 
   // Request delete student (triggers confirmation dialog first)
   const handleRequestDelete = (student: Student) => {
     setConfirmDialog({
       visible: true,
-      type: 'delete',
+      type: "delete",
       targetStudent: student,
     });
   };
@@ -157,13 +163,14 @@ export default function StudentManagementApp() {
   // Image Picker from device
   const handlePickImage = async () => {
     try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
         Alert.alert(
-          lang === 'vi' ? 'Quyền truy cập' : 'Permission Required',
-          lang === 'vi'
-            ? 'Vui lòng cấp quyền truy cập thư viện ảnh để tiếp tục.'
-            : 'Please grant access to your photo library to proceed.'
+          lang === "vi" ? "Quyền truy cập" : "Permission Required",
+          lang === "vi"
+            ? "Vui lòng cấp quyền truy cập thư viện ảnh để tiếp tục."
+            : "Please grant access to your photo library to proceed.",
         );
         return;
       }
@@ -178,7 +185,7 @@ export default function StudentManagementApp() {
         setInputAvatar(result.assets[0].uri);
       }
     } catch (e) {
-      console.warn('Pick image error', e);
+      console.warn("Pick image error", e);
     }
   };
 
@@ -189,7 +196,7 @@ export default function StudentManagementApp() {
       errs.name = t.errNameRequired;
     }
 
-    const trimmedId = inputId.trim().toUpperCase();
+    const trimmedId = inputId.trim();
     if (!trimmedId) {
       errs.id = t.errIdRequired;
     } else if (!MSSV_REGEX.test(trimmedId)) {
@@ -197,8 +204,8 @@ export default function StudentManagementApp() {
     } else {
       const isDuplicate = students.some(
         (s) =>
-          s.studentId.trim().toUpperCase() === trimmedId &&
-          s.id !== editingStudentId
+          s.studentId.trim().toUpperCase() === trimmedId.toUpperCase() &&
+          s.id !== editingStudentId,
       );
       if (isDuplicate) {
         errs.id = t.errIdExists;
@@ -220,11 +227,11 @@ export default function StudentManagementApp() {
   const handleSubmitForm = () => {
     if (!validateForm()) return;
 
-    if (formMode === 'edit') {
+    if (formMode === "edit") {
       // Yêu cầu xác nhận trước khi sửa thông tin
       setConfirmDialog({
         visible: true,
-        type: 'edit_save',
+        type: "edit_save",
       });
     } else {
       executeSaveStudent();
@@ -233,10 +240,10 @@ export default function StudentManagementApp() {
 
   // Execute save to local AsyncStorage
   const executeSaveStudent = async () => {
-    if (formMode === 'add') {
+    if (formMode === "add") {
       const newStudent: Student = {
-        id: 'sv-' + Date.now().toString(),
-        studentId: inputId.trim().toUpperCase(),
+        id: "sv-" + Date.now().toString(),
+        studentId: inputId.trim(),
         fullName: inputName.trim(),
         email: inputEmail.trim().toLowerCase(),
         avatar: inputAvatar.trim(),
@@ -245,12 +252,12 @@ export default function StudentManagementApp() {
       const updated = [newStudent, ...students];
       setStudents(updated);
       await saveStudents(updated);
-    } else if (formMode === 'edit' && editingStudentId) {
+    } else if (formMode === "edit" && editingStudentId) {
       const updated = students.map((s) => {
         if (s.id === editingStudentId) {
           return {
             ...s,
-            studentId: inputId.trim().toUpperCase(),
+            studentId: inputId.trim(),
             fullName: inputName.trim(),
             email: inputEmail.trim().toLowerCase(),
             avatar: inputAvatar.trim(),
@@ -262,7 +269,7 @@ export default function StudentManagementApp() {
       await saveStudents(updated);
     }
 
-    setCurrentScreen('list');
+    setCurrentScreen("list");
   };
 
   // Render individual student card in list (Trang 1)
@@ -279,9 +286,17 @@ export default function StudentManagementApp() {
         {/* Left Side: Avatar */}
         <View style={styles.cardAvatarWrapper}>
           {item.avatar ? (
-            <Image source={{ uri: item.avatar }} style={styles.cardAvatarImage} />
+            <Image
+              source={{ uri: item.avatar }}
+              style={styles.cardAvatarImage}
+            />
           ) : (
-            <View style={[styles.cardAvatarFallback, { backgroundColor: avatarColor }]}>
+            <View
+              style={[
+                styles.cardAvatarFallback,
+                { backgroundColor: avatarColor },
+              ]}
+            >
               <Text style={styles.cardAvatarText}>{initials}</Text>
             </View>
           )}
@@ -302,7 +317,7 @@ export default function StudentManagementApp() {
           </Text>
         </View>
 
-        {/* Right Side: Action buttons (Sửa / Xóa) */}
+        {/* Right Side: Action buttons (Sửa / Xóa) - Chỉ icon không cần text */}
         <View style={styles.cardActions}>
           <TouchableOpacity
             style={styles.btnActionEdit}
@@ -312,7 +327,7 @@ export default function StudentManagementApp() {
               handleRequestEdit(item);
             }}
           >
-            <Text style={styles.btnActionEditText}>✏️ {t.edit}</Text>
+            <Text style={styles.btnActionEditText}>✏️</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -323,7 +338,7 @@ export default function StudentManagementApp() {
               handleRequestDelete(item);
             }}
           >
-            <Text style={styles.btnActionDeleteText}>🗑️ {t.delete}</Text>
+            <Text style={styles.btnActionDeleteText}>🗑️</Text>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -337,7 +352,7 @@ export default function StudentManagementApp() {
       {/* ========================================================================= */}
       {/* SCREEN 1: DANH SÁCH SINH VIÊN (TRANG 1)                                   */}
       {/* ========================================================================= */}
-      {currentScreen === 'list' && (
+      {currentScreen === "list" && (
         <View style={styles.container}>
           {/* Header Banner */}
           <View style={styles.headerBanner}>
@@ -353,7 +368,9 @@ export default function StudentManagementApp() {
                 activeOpacity={0.75}
                 onPress={handleToggleLanguage}
               >
-                <Text style={styles.langBadgeIcon}>{lang === 'vi' ? '🇻🇳' : '🇬🇧'}</Text>
+                <Text style={styles.langBadgeIcon}>
+                  {lang === "vi" ? "🇻🇳" : "🇬🇧"}
+                </Text>
                 <Text style={styles.langBadgeText}>{lang.toUpperCase()}</Text>
               </TouchableOpacity>
             </View>
@@ -362,7 +379,11 @@ export default function StudentManagementApp() {
             <View style={styles.headerStatsRow}>
               <View style={styles.countPill}>
                 <Text style={styles.countPillText}>
-                  📋 {t.studentCount.replace('{count}', students.length.toString())}
+                  📋{" "}
+                  {t.studentCount.replace(
+                    "{count}",
+                    students.length.toString(),
+                  )}
                 </Text>
               </View>
             </View>
@@ -406,22 +427,24 @@ export default function StudentManagementApp() {
       {/* ========================================================================= */}
       {/* SCREEN 3: THÊM MỚI / CHỈNH SỬA SINH VIÊN (TRANG 3 - EDITABLE)            */}
       {/* ========================================================================= */}
-      {currentScreen === 'form' && (
+      {currentScreen === "form" && (
         <KeyboardAvoidingView
           style={styles.container}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
           {/* Form Header */}
           <View style={styles.formHeader}>
             <TouchableOpacity
               style={styles.formHeaderBack}
-              onPress={() => setCurrentScreen('list')}
+              onPress={() => setCurrentScreen("list")}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Text style={styles.formHeaderBackText}>‹ {t.cancel}</Text>
             </TouchableOpacity>
             <Text style={styles.formHeaderTitle}>
-              {formMode === 'add' ? `➕ ${t.addStudent}` : `✏️ ${t.editStudent}`}
+              {formMode === "add"
+                ? `➕ ${t.addStudent}`
+                : `✏️ ${t.editStudent}`}
             </Text>
             <View style={{ width: 60 }} />
           </View>
@@ -436,16 +459,23 @@ export default function StudentManagementApp() {
             <View style={styles.avatarPickerCard}>
               <View style={styles.avatarPreviewCircle}>
                 {inputAvatar ? (
-                  <Image source={{ uri: inputAvatar }} style={styles.avatarPreviewImage} />
+                  <Image
+                    source={{ uri: inputAvatar }}
+                    style={styles.avatarPreviewImage}
+                  />
                 ) : (
                   <View
                     style={[
                       styles.avatarPreviewFallback,
-                      { backgroundColor: getAvatarColor(inputName || inputId || 'New') },
+                      {
+                        backgroundColor: getAvatarColor(
+                          inputName || inputId || "New",
+                        ),
+                      },
                     ]}
                   >
                     <Text style={styles.avatarPreviewFallbackText}>
-                      {inputName ? getInitials(inputName) : 'SV'}
+                      {inputName ? getInitials(inputName) : "SV"}
                     </Text>
                   </View>
                 )}
@@ -456,7 +486,9 @@ export default function StudentManagementApp() {
                 activeOpacity={0.8}
                 onPress={handlePickImage}
               >
-                <Text style={styles.btnPickImageText}>📷 {t.pickFromGallery}</Text>
+                <Text style={styles.btnPickImageText}>
+                  📷 {t.pickFromGallery}
+                </Text>
               </TouchableOpacity>
               <Text style={styles.avatarPickerSub}>{t.orEnterUrl}</Text>
             </View>
@@ -465,7 +497,10 @@ export default function StudentManagementApp() {
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>🔗 {t.avatarUrl}</Text>
               <TextInput
-                style={[styles.inputField, formErrors.avatar && styles.inputFieldError]}
+                style={[
+                  styles.inputField,
+                  formErrors.avatar && styles.inputFieldError,
+                ]}
                 placeholder={t.enterAvatarUrl}
                 placeholderTextColor="#94A3B8"
                 value={inputAvatar}
@@ -478,13 +513,17 @@ export default function StudentManagementApp() {
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>👤 {t.fullName} *</Text>
               <TextInput
-                style={[styles.inputField, formErrors.name && styles.inputFieldError]}
+                style={[
+                  styles.inputField,
+                  formErrors.name && styles.inputFieldError,
+                ]}
                 placeholder={t.enterFullName}
                 placeholderTextColor="#94A3B8"
                 value={inputName}
                 onChangeText={(text) => {
                   setInputName(text);
-                  if (formErrors.name) setFormErrors((e) => ({ ...e, name: '' }));
+                  if (formErrors.name)
+                    setFormErrors((e) => ({ ...e, name: "" }));
                 }}
                 autoCapitalize="words"
               />
@@ -497,21 +536,25 @@ export default function StudentManagementApp() {
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>🏷️ {t.studentId} *</Text>
               <TextInput
-                style={[styles.inputField, formErrors.id && styles.inputFieldError]}
+                style={[
+                  styles.inputField,
+                  formErrors.id && styles.inputFieldError,
+                ]}
                 placeholder={t.enterStudentId}
                 placeholderTextColor="#94A3B8"
                 value={inputId}
                 maxLength={9}
                 onChangeText={(text) => {
-                  const upper = text.toUpperCase();
-                  setInputId(upper);
-                  if (formErrors.id) setFormErrors((e) => ({ ...e, id: '' }));
+                  setInputId(text);
+                  if (formErrors.id) setFormErrors((e) => ({ ...e, id: "" }));
                 }}
-                autoCapitalize="characters"
+                autoCapitalize="none"
                 autoCorrect={false}
               />
               <Text style={styles.inputHint}>
-                📌 Định dạng 9 ký tự: Chữ 'B' + 2 chữ cái A-Z + 2 số từ 22-26 + 4 số cuối 0-9 (VD: BCN240001)
+                📌 Định dạng 9 ký tự: Chữ 'B' in hoa + 2 chữ cái (không bắt buộc
+                viết hoa) + 2 số từ 22-26 + 4 số cuối 0-9 (VD: Bcn240001,
+                BCN240001)
               </Text>
               {!!formErrors.id && (
                 <Text style={styles.errorText}>{formErrors.id}</Text>
@@ -522,14 +565,18 @@ export default function StudentManagementApp() {
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>📧 {t.email} *</Text>
               <TextInput
-                style={[styles.inputField, formErrors.email && styles.inputFieldError]}
+                style={[
+                  styles.inputField,
+                  formErrors.email && styles.inputFieldError,
+                ]}
                 placeholder={t.enterEmail}
                 placeholderTextColor="#94A3B8"
                 value={inputEmail}
                 onChangeText={(text) => {
                   const trimmed = text.trim();
                   setInputEmail(trimmed);
-                  if (formErrors.email) setFormErrors((e) => ({ ...e, email: '' }));
+                  if (formErrors.email)
+                    setFormErrors((e) => ({ ...e, email: "" }));
                 }}
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -548,7 +595,7 @@ export default function StudentManagementApp() {
               <TouchableOpacity
                 style={styles.btnFormCancel}
                 activeOpacity={0.8}
-                onPress={() => setCurrentScreen('list')}
+                onPress={() => setCurrentScreen("list")}
               >
                 <Text style={styles.btnFormCancelText}>{t.cancel}</Text>
               </TouchableOpacity>
@@ -558,7 +605,7 @@ export default function StudentManagementApp() {
                 activeOpacity={0.88}
                 onPress={handleSubmitForm}
               >
-                <Text style={styles.btnFormSaveText}>💾 {t.save}</Text>
+                <Text style={styles.btnFormSaveText}>{t.save}</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -579,7 +626,10 @@ export default function StudentManagementApp() {
           activeOpacity={1}
           onPress={() => setDetailStudent(null)}
         >
-          <View style={styles.detailDialogCard} onStartShouldSetResponder={() => true}>
+          <View
+            style={styles.detailDialogCard}
+            onStartShouldSetResponder={() => true}
+          >
             {/* Dialog Close Button */}
             <TouchableOpacity
               style={styles.dialogCloseButton}
@@ -594,12 +644,19 @@ export default function StudentManagementApp() {
                 {/* Avatar Centered */}
                 <View style={styles.dialogAvatarWrapper}>
                   {detailStudent.avatar ? (
-                    <Image source={{ uri: detailStudent.avatar }} style={styles.dialogAvatarImage} />
+                    <Image
+                      source={{ uri: detailStudent.avatar }}
+                      style={styles.dialogAvatarImage}
+                    />
                   ) : (
                     <View
                       style={[
                         styles.dialogAvatarFallback,
-                        { backgroundColor: getAvatarColor(detailStudent.fullName) },
+                        {
+                          backgroundColor: getAvatarColor(
+                            detailStudent.fullName,
+                          ),
+                        },
                       ]}
                     >
                       <Text style={styles.dialogAvatarText}>
@@ -610,30 +667,46 @@ export default function StudentManagementApp() {
                 </View>
 
                 {/* Name & ID Header */}
-                <Text style={styles.dialogFullName}>{detailStudent.fullName}</Text>
+                <Text style={styles.dialogFullName}>
+                  {detailStudent.fullName}
+                </Text>
                 <View style={styles.dialogIdBadge}>
-                  <Text style={styles.dialogIdBadgeText}>{detailStudent.studentId}</Text>
+                  <Text style={styles.dialogIdBadgeText}>
+                    {detailStudent.studentId}
+                  </Text>
                 </View>
 
                 {/* Info Fields Rows */}
                 <View style={styles.dialogInfoContainer}>
                   <View style={styles.dialogInfoRow}>
                     <Text style={styles.dialogInfoLabel}>👤 {t.fullName}:</Text>
-                    <Text style={styles.dialogInfoValue}>{detailStudent.fullName}</Text>
+                    <Text style={styles.dialogInfoValue}>
+                      {detailStudent.fullName}
+                    </Text>
                   </View>
 
                   <View style={styles.dialogInfoRow}>
-                    <Text style={styles.dialogInfoLabel}>🏷️ {t.studentId}:</Text>
-                    <Text style={styles.dialogInfoValue}>{detailStudent.studentId}</Text>
+                    <Text style={styles.dialogInfoLabel}>
+                      🏷️ {t.studentId}:
+                    </Text>
+                    <Text style={styles.dialogInfoValue}>
+                      {detailStudent.studentId}
+                    </Text>
                   </View>
 
                   <View style={styles.dialogInfoRow}>
                     <Text style={styles.dialogInfoLabel}>📧 {t.email}:</Text>
-                    <Text style={styles.dialogInfoValue}>{detailStudent.email}</Text>
+                    <Text style={styles.dialogInfoValue}>
+                      {detailStudent.email}
+                    </Text>
                   </View>
 
-                  <View style={[styles.dialogInfoRow, { borderBottomWidth: 0 }]}>
-                    <Text style={styles.dialogInfoLabel}>📅 {t.joinedDate}:</Text>
+                  <View
+                    style={[styles.dialogInfoRow, { borderBottomWidth: 0 }]}
+                  >
+                    <Text style={styles.dialogInfoLabel}>
+                      📅 {t.joinedDate}:
+                    </Text>
                     <Text style={styles.dialogInfoValue}>
                       {new Date(detailStudent.createdAt).toLocaleDateString()}
                     </Text>
@@ -657,7 +730,9 @@ export default function StudentManagementApp() {
                     activeOpacity={0.8}
                     onPress={() => handleRequestDelete(detailStudent)}
                   >
-                    <Text style={styles.btnDialogDeleteText}>🗑️ {t.delete}</Text>
+                    <Text style={styles.btnDialogDeleteText}>
+                      🗑️ {t.delete}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -673,31 +748,33 @@ export default function StudentManagementApp() {
         visible={confirmDialog.visible}
         transparent
         animationType="fade"
-        onRequestClose={() => setConfirmDialog({ visible: false, type: 'delete' })}
+        onRequestClose={() =>
+          setConfirmDialog({ visible: false, type: "delete" })
+        }
       >
         <View style={styles.modalOverlay}>
           <View style={styles.confirmBox}>
             <View
               style={[
                 styles.confirmIconBadge,
-                confirmDialog.type === 'delete'
+                confirmDialog.type === "delete"
                   ? styles.confirmIconDelete
                   : styles.confirmIconEdit,
               ]}
             >
               <Text style={styles.confirmIconEmoji}>
-                {confirmDialog.type === 'delete' ? '🗑️' : '✏️'}
+                {confirmDialog.type === "delete" ? "🗑️" : "✏️"}
               </Text>
             </View>
 
             <Text style={styles.confirmTitle}>
-              {confirmDialog.type === 'delete'
+              {confirmDialog.type === "delete"
                 ? t.confirmDeleteTitle
                 : t.confirmEditTitle}
             </Text>
 
             <Text style={styles.confirmMessage}>
-              {confirmDialog.type === 'delete'
+              {confirmDialog.type === "delete"
                 ? t.confirmDeleteMsg
                 : t.confirmEditMsg}
             </Text>
@@ -707,7 +784,9 @@ export default function StudentManagementApp() {
               <TouchableOpacity
                 style={styles.btnConfirmCancel}
                 activeOpacity={0.8}
-                onPress={() => setConfirmDialog({ visible: false, type: 'delete' })}
+                onPress={() =>
+                  setConfirmDialog({ visible: false, type: "delete" })
+                }
               >
                 <Text style={styles.btnConfirmCancelText}>{t.no}</Text>
               </TouchableOpacity>
@@ -716,20 +795,20 @@ export default function StudentManagementApp() {
               <TouchableOpacity
                 style={[
                   styles.btnConfirmYes,
-                  confirmDialog.type === 'delete'
+                  confirmDialog.type === "delete"
                     ? styles.btnConfirmYesDelete
                     : styles.btnConfirmYesEdit,
                 ]}
                 activeOpacity={0.8}
                 onPress={async () => {
                   const { type, targetStudent } = confirmDialog;
-                  setConfirmDialog({ visible: false, type: 'delete' });
+                  setConfirmDialog({ visible: false, type: "delete" });
 
-                  if (type === 'delete' && targetStudent) {
+                  if (type === "delete" && targetStudent) {
                     await handleExecuteDelete(targetStudent.id);
-                  } else if (type === 'edit_request' && targetStudent) {
+                  } else if (type === "edit_request" && targetStudent) {
                     handleExecuteOpenEdit(targetStudent);
-                  } else if (type === 'edit_save') {
+                  } else if (type === "edit_save") {
                     await executeSaveStudent();
                   }
                 }}
@@ -747,56 +826,56 @@ export default function StudentManagementApp() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#4338CA',
+    backgroundColor: "#4338CA",
   },
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: "#F8FAFC",
   },
 
   /* Header Banner */
   headerBanner: {
-    backgroundColor: '#4338CA',
+    backgroundColor: "#4338CA",
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? 16 : 8,
+    paddingTop: Platform.OS === "android" ? 16 : 8,
     paddingBottom: 18,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
-    shadowColor: '#4338CA',
+    shadowColor: "#4338CA",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 6,
   },
   headerTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   headerTitleGroup: {
     flex: 1,
   },
   headerAppTitle: {
     fontSize: 22,
-    fontWeight: '800',
-    color: '#FFFFFF',
+    fontWeight: "800",
+    color: "#FFFFFF",
     letterSpacing: 0.3,
   },
   headerTagline: {
     fontSize: 13,
-    color: '#C7D2FE',
+    color: "#C7D2FE",
     marginTop: 2,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   langBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: "rgba(255, 255, 255, 0.3)",
     gap: 6,
   },
   langBadgeIcon: {
@@ -804,24 +883,24 @@ const styles = StyleSheet.create({
   },
   langBadgeText: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
   headerStatsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
   },
   countPill: {
-    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+    backgroundColor: "rgba(255, 255, 255, 0.16)",
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 12,
   },
   countPillText: {
-    color: '#EEF2FF',
+    color: "#EEF2FF",
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 
   /* List & Cards */
@@ -830,19 +909,19 @@ const styles = StyleSheet.create({
     paddingBottom: 90,
   },
   card: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
     borderRadius: 18,
     padding: 14,
     marginBottom: 12,
-    alignItems: 'center',
-    shadowColor: '#64748B',
+    alignItems: "center",
+    shadowColor: "#64748B",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: "#F1F5F9",
   },
   cardAvatarWrapper: {
     marginRight: 12,
@@ -852,97 +931,97 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 27,
     borderWidth: 2,
-    borderColor: '#E0E7FF',
+    borderColor: "#E0E7FF",
   },
   cardAvatarFallback: {
     width: 54,
     height: 54,
     borderRadius: 27,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 2,
-    borderColor: '#E0E7FF',
+    borderColor: "#E0E7FF",
   },
   cardAvatarText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   cardInfo: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   cardName: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#0F172A',
+    fontWeight: "700",
+    color: "#0F172A",
     marginBottom: 4,
   },
   cardMetaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 4,
   },
   idBadge: {
-    backgroundColor: '#EEF2FF',
+    backgroundColor: "#EEF2FF",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   idBadgeText: {
-    color: '#4F46E5',
+    color: "#4F46E5",
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.4,
   },
   cardEmail: {
     fontSize: 12,
-    color: '#64748B',
-    fontWeight: '500',
+    color: "#64748B",
+    fontWeight: "500",
   },
   cardActions: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 6,
     marginLeft: 8,
   },
   btnActionEdit: {
-    backgroundColor: '#EEF2FF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: "#EEF2FF",
+    width: 36,
+    height: 36,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#C7D2FE',
+    borderColor: "#C7D2FE",
+    justifyContent: "center",
+    alignItems: "center",
   },
   btnActionEditText: {
-    color: '#4F46E5',
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 16,
   },
   btnActionDelete: {
-    backgroundColor: '#FEF2F2',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: "#FEF2F2",
+    width: 36,
+    height: 36,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: "#FECACA",
+    justifyContent: "center",
+    alignItems: "center",
   },
   btnActionDeleteText: {
-    color: '#DC2626',
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: 16,
   },
 
   /* Empty State */
   centerState: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 30,
   },
   emptyIcon: {
@@ -951,44 +1030,44 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#334155',
-    textAlign: 'center',
+    fontWeight: "700",
+    color: "#334155",
+    textAlign: "center",
   },
   emptySubtitle: {
     fontSize: 13,
-    color: '#94A3B8',
-    textAlign: 'center',
+    color: "#94A3B8",
+    textAlign: "center",
     marginTop: 6,
     lineHeight: 18,
   },
 
   /* Bottom Add Bar */
   bottomBar: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 14,
+    paddingBottom: Platform.OS === "ios" ? 24 : 14,
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    shadowColor: '#000',
+    borderTopColor: "#E2E8F0",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 8,
   },
   btnAddBottom: {
-    backgroundColor: '#4F46E5',
+    backgroundColor: "#4F46E5",
     borderRadius: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 14,
-    shadowColor: '#4F46E5',
+    shadowColor: "#4F46E5",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 10,
@@ -997,12 +1076,12 @@ const styles = StyleSheet.create({
   },
   btnAddBottomIcon: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   btnAddBottomText: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontWeight: "700",
+    color: "#FFFFFF",
     letterSpacing: 0.3,
   },
 
@@ -1010,12 +1089,12 @@ const styles = StyleSheet.create({
   /* SCREEN 3: FORM STYLES                                   */
   /* ======================================================= */
   formHeader: {
-    backgroundColor: '#4338CA',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: "#4338CA",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 16 : 8,
+    paddingTop: Platform.OS === "android" ? 16 : 8,
     paddingBottom: 16,
   },
   formHeaderBack: {
@@ -1023,36 +1102,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   formHeaderBackText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   formHeaderTitle: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   formScrollView: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: "#F8FAFC",
   },
   formScrollContent: {
     padding: 20,
     paddingBottom: 40,
   },
   avatarPickerCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
-    shadowColor: '#64748B',
+    shadowColor: "#64748B",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: "#E2E8F0",
   },
   avatarPreviewCircle: {
     marginBottom: 12,
@@ -1062,114 +1141,114 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 45,
     borderWidth: 3,
-    borderColor: '#4F46E5',
+    borderColor: "#4F46E5",
   },
   avatarPreviewFallback: {
     width: 90,
     height: 90,
     borderRadius: 45,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 3,
-    borderColor: '#4F46E5',
+    borderColor: "#4F46E5",
   },
   avatarPreviewFallbackText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   btnPickImage: {
-    backgroundColor: '#EEF2FF',
+    backgroundColor: "#EEF2FF",
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#C7D2FE',
+    borderColor: "#C7D2FE",
   },
   btnPickImageText: {
-    color: '#4F46E5',
+    color: "#4F46E5",
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   avatarPickerSub: {
     fontSize: 11,
-    color: '#94A3B8',
+    color: "#94A3B8",
     marginTop: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   inputGroup: {
     marginBottom: 16,
   },
   inputLabel: {
     fontSize: 13,
-    fontWeight: '700',
-    color: '#334155',
+    fontWeight: "700",
+    color: "#334155",
     marginBottom: 6,
     marginLeft: 2,
   },
   inputField: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#CBD5E1',
+    borderColor: "#CBD5E1",
     paddingHorizontal: 14,
-    paddingVertical: Platform.OS === 'ios' ? 12 : 10,
+    paddingVertical: Platform.OS === "ios" ? 12 : 10,
     fontSize: 14,
-    color: '#0F172A',
-    fontWeight: '500',
+    color: "#0F172A",
+    fontWeight: "500",
   },
   inputFieldError: {
-    borderColor: '#EF4444',
-    backgroundColor: '#FEF2F2',
+    borderColor: "#EF4444",
+    backgroundColor: "#FEF2F2",
   },
   errorText: {
-    color: '#EF4444',
+    color: "#EF4444",
     fontSize: 12,
     marginTop: 4,
     marginLeft: 4,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   inputHint: {
     fontSize: 11,
-    color: '#64748B',
+    color: "#64748B",
     marginTop: 4,
     marginLeft: 4,
-    fontWeight: '500',
+    fontWeight: "500",
     lineHeight: 16,
   },
   formButtonRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginTop: 10,
   },
   btnFormCancel: {
     flex: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: "#E2E8F0",
     borderRadius: 14,
     paddingVertical: 14,
-    alignItems: 'center',
+    alignItems: "center",
   },
   btnFormCancelText: {
-    color: '#475569',
+    color: "#475569",
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   btnFormSave: {
     flex: 2,
-    backgroundColor: '#4F46E5',
+    backgroundColor: "#4F46E5",
     borderRadius: 14,
     paddingVertical: 14,
-    alignItems: 'center',
-    shadowColor: '#4F46E5',
+    alignItems: "center",
+    shadowColor: "#4F46E5",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 3,
   },
   btnFormSaveText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 
   /* ======================================================= */
@@ -1177,41 +1256,41 @@ const styles = StyleSheet.create({
   /* ======================================================= */
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.65)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(15, 23, 42, 0.65)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   detailDialogCard: {
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 24,
     padding: 24,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
     shadowRadius: 20,
     elevation: 10,
-    position: 'relative',
+    position: "relative",
   },
   dialogCloseButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 16,
     right: 16,
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F1F5F9',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#F1F5F9",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 10,
   },
   dialogCloseText: {
     fontSize: 16,
-    color: '#64748B',
-    fontWeight: '700',
+    color: "#64748B",
+    fontWeight: "700",
   },
   dialogAvatarWrapper: {
     marginTop: 8,
@@ -1222,110 +1301,110 @@ const styles = StyleSheet.create({
     height: 88,
     borderRadius: 44,
     borderWidth: 3,
-    borderColor: '#4F46E5',
+    borderColor: "#4F46E5",
   },
   dialogAvatarFallback: {
     width: 88,
     height: 88,
     borderRadius: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 3,
-    borderColor: '#4F46E5',
+    borderColor: "#4F46E5",
   },
   dialogAvatarText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   dialogFullName: {
     fontSize: 20,
-    fontWeight: '800',
-    color: '#0F172A',
-    textAlign: 'center',
+    fontWeight: "800",
+    color: "#0F172A",
+    textAlign: "center",
     marginBottom: 6,
   },
   dialogIdBadge: {
-    backgroundColor: '#EEF2FF',
+    backgroundColor: "#EEF2FF",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
     marginBottom: 18,
   },
   dialogIdBadgeText: {
-    color: '#4F46E5',
+    color: "#4F46E5",
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   dialogInfoContainer: {
-    width: '100%',
-    backgroundColor: '#F8FAFC',
+    width: "100%",
+    backgroundColor: "#F8FAFC",
     borderRadius: 16,
     padding: 12,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: "#E2E8F0",
   },
   dialogInfoRow: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: "#E2E8F0",
   },
   dialogInfoLabel: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#64748B',
+    fontWeight: "700",
+    color: "#64748B",
     marginBottom: 2,
   },
   dialogInfoValue: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#1E293B',
+    fontWeight: "600",
+    color: "#1E293B",
   },
   dialogActionsRow: {
-    flexDirection: 'row',
-    width: '100%',
+    flexDirection: "row",
+    width: "100%",
     gap: 10,
   },
   btnDialogEdit: {
     flex: 1,
-    backgroundColor: '#4F46E5',
+    backgroundColor: "#4F46E5",
     paddingVertical: 12,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   btnDialogEditText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   btnDialogDelete: {
     flex: 1,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: "#FEE2E2",
     paddingVertical: 12,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: "#FECACA",
   },
   btnDialogDeleteText: {
-    color: '#DC2626',
+    color: "#DC2626",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 
   /* ======================================================= */
   /* CONFIRM DIALOG STYLES                                   */
   /* ======================================================= */
   confirmBox: {
-    width: '100%',
+    width: "100%",
     maxWidth: 320,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 22,
     padding: 22,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,
     shadowRadius: 18,
@@ -1335,66 +1414,66 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 12,
   },
   confirmIconDelete: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: "#FEE2E2",
   },
   confirmIconEdit: {
-    backgroundColor: '#EEF2FF',
+    backgroundColor: "#EEF2FF",
   },
   confirmIconEmoji: {
     fontSize: 26,
   },
   confirmTitle: {
     fontSize: 18,
-    fontWeight: '800',
-    color: '#0F172A',
+    fontWeight: "800",
+    color: "#0F172A",
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   confirmMessage: {
     fontSize: 14,
-    color: '#64748B',
-    textAlign: 'center',
+    color: "#64748B",
+    textAlign: "center",
     lineHeight: 20,
     marginBottom: 20,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   confirmButtonsRow: {
-    flexDirection: 'row',
-    width: '100%',
+    flexDirection: "row",
+    width: "100%",
     gap: 10,
   },
   btnConfirmCancel: {
     flex: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: "#F1F5F9",
     paddingVertical: 12,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   btnConfirmCancelText: {
-    color: '#475569',
+    color: "#475569",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   btnConfirmYes: {
     flex: 1,
     paddingVertical: 12,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   btnConfirmYesDelete: {
-    backgroundColor: '#DC2626',
+    backgroundColor: "#DC2626",
   },
   btnConfirmYesEdit: {
-    backgroundColor: '#4F46E5',
+    backgroundColor: "#4F46E5",
   },
   btnConfirmYesText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });
