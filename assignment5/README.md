@@ -3,9 +3,11 @@
 ## 1. Thông tin đồ án
 - **Đề tài**: Xây dựng ứng dụng Quản lý khóa học (Course Management)
 - **Nền tảng**: React Native (Expo Router)
-- **Backend MockAPI**: [https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1](https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1)
-  - Resources `categories`: `https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1/categories`
-  - Resources `courses`: `https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1/courses`
+- **Backend MockAPI**:
+  - **Trang Dashboard quản lý MockAPI**: [https://mockapi.io/project/6ace005bf338359cf1c2d88e](https://mockapi.io/project/6ace005bf338359cf1c2d88e)
+  - **Base URL API**: `https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1` *(Lưu ý: MockAPI yêu cầu kèm theo tên resource cụ thể phía sau để trả về dữ liệu)*
+  - **Link Resource `categories` (Xem trực tiếp JSON)**: [https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1/categories](https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1/categories)
+  - **Link Resource `courses` (Xem trực tiếp JSON)**: [https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1/courses](https://6ace005bf338359cf1c2d88e.mockapi.io/api/v1/courses)
 
 ---
 
@@ -23,10 +25,11 @@
 ### 2.2. Chi tiết khóa học (`/course-detail?id=...`)
 - Hiển thị đầy đủ thông tin: Ảnh bìa, Tiêu đề, Badge danh mục, Học phí, Giảng viên, Thời lượng, Ngày tạo (`createdAt`), Mô tả khóa học.
 - **Phát video trailer**:
-  - Hỗ trợ phát video MP4 trực tiếp qua `expo-video` (có trình phát kèm controls đầy đủ, nút Phát / Tạm dừng).
+  - Hỗ trợ phát video MP4 trực tiếp (có trình phát kèm controls đầy đủ, nút Phát / Tạm dừng).
   - Tự động nhận diện liên kết YouTube và hỗ trợ mở trên ứng dụng YouTube / trình duyệt.
+  - Có nút nổi bật **"🎬 Xem video trailer khóa học"**.
 - Thao tác chỉnh sửa: Chuyển sang form chỉnh sửa với dữ liệu được nạp sẵn.
-- Thao tác xóa: Hiển thị hộp thoại xác nhận (Alert confirm), xóa trên MockAPI và tự động đồng bộ quay về trang chủ.
+- Thao tác xóa: Hiển thị Modal xác nhận xóa an toàn trên mọi nền tảng (Web + Mobile), xóa trên MockAPI và tự động đồng bộ quay về trang chủ.
 
 ### 2.3. Thêm & Chỉnh sửa khóa học (`/course-form`)
 - Form nhập liệu trực quan với đầy đủ các trường:
